@@ -22,7 +22,7 @@ namespace UnityExplorerLoader
         class InputFocusHandler : MonoBehaviour
         {
             public InputField component;
-            bool keyboardWasDisabled;
+            //bool keyboardWasDisabled;
 
             void Update()
             {
@@ -33,18 +33,18 @@ namespace UnityExplorerLoader
 #if DEBUG
                         Main.Logger.Log("Disabling keyboard");
 #endif
-                        keyboardWasDisabled = true;
+                        //keyboardWasDisabled = true;
                         Game.Instance.Keyboard.Disabled.SetValue(true);
                     }
                     return;
                 }
 
-                if (keyboardWasDisabled && !component.isFocused)
+                if (/*keyboardWasDisabled && */!component.isFocused)
                 {
 #if DEBUG
                     Main.Logger.Log("Enabling keyboard");
 #endif
-                    keyboardWasDisabled = false;
+                    //keyboardWasDisabled = false;
                     Game.Instance.Keyboard.Disabled.SetValue(false);
                 }
             }
