@@ -2,6 +2,7 @@
 
 using Kingmaker;
 
+using System.IO;
 using System.Linq;
 using System.Reflection;
 
@@ -61,7 +62,7 @@ namespace UnityExplorerLoader
         [HarmonyPatch]
         static class Loader
         {
-            [HarmonyPatch(typeof(MainMenu), "Awake")]
+            [HarmonyPatch(typeof(GameMainMenu), "Awake")]
             [HarmonyPostfix]
             public static void MainMenu_Awake()
             {
@@ -99,6 +100,9 @@ namespace UnityExplorerLoader
             modEntry.OnUnload = OnUnload;
             modEntry.OnGUI = OnGUI;
             HarmonyInstance = new Harmony(modEntry.Info.Id);
+
+            Assembly.LoadFrom(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "UnityExplorer", "UnityExplorer.STANDALONE.Mono.dll"));
+
             HarmonyInstance.PatchAll(Assembly.GetExecutingAssembly());
             return true;
         }
