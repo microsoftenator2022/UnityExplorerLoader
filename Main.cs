@@ -2,6 +2,7 @@
 
 using Kingmaker;
 using Kingmaker.UI;
+using Kingmaker.UI.MVVM;
 using Kingmaker.UI.Selection;
 
 using MicroUtils.Transpiler;
@@ -94,31 +95,49 @@ namespace UnityExplorerLoader
     [HarmonyPatch]
     class UnityExplorerLoader : MonoBehaviour
     {
-        [HarmonyPatch(typeof(MainMenu), "Awake")]
+        static bool loaded;
+
+        [HarmonyPatch(typeof(RootUIContext), nameof(RootUIContext.InitializeUiScene))]
         [HarmonyPostfix]
-        public static void MainMenu_Awake(MainMenu __instance)
+        static void InitializeUiScene_Postfix() => LoadUnityExplorer();
+
+        static void LoadUnityExplorer()
         {
-            ExplorerStandalone.CreateInstance(delegate (string msg, LogType logType)
+            if (loaded)
+                return;
+
+            Main.Logger.Log("Load UE");
+
+            try
             {
-                switch (logType)
+                ExplorerStandalone.CreateInstance(delegate (string msg, LogType logType)
                 {
-                    case LogType.Error:
-                        Main.Logger.Error(msg);
-                        break;
-                    case LogType.Assert:
-                        Main.Logger.Critical(msg);
-                        break;
-                    case LogType.Warning:
-                        Main.Logger.Warning(msg);
-                        break;
-                    case LogType.Log:
-                        Main.Logger.Log(msg);
-                        break;
-                    case LogType.Exception:
-                        Main.Logger.Error(msg);
-                        break;
-                }
-            });
+                    switch (logType)
+                    {
+                        case LogType.Error:
+                            Main.Logger.Error(msg);
+                            break;
+                        case LogType.Assert:
+                            Main.Logger.Critical(msg);
+                            break;
+                        case LogType.Warning:
+                            Main.Logger.Warning(msg);
+                            break;
+                        case LogType.Log:
+                            Main.Logger.Log(msg);
+                            break;
+                        case LogType.Exception:
+                            Main.Logger.Error(msg);
+                            break;
+                    }
+                });
+
+                loaded = true;
+            }
+            catch (Exception e)
+            {
+                Main.Logger.LogException(e);
+            }
         }
     }
 
