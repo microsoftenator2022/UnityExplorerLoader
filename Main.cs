@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 
 using Kingmaker;
-using Kingmaker.UI.InputSystems;
+using Kingmaker.UI;
 using Kingmaker.UI.Selection;
 
 using MicroUtils.Transpiler;
@@ -94,9 +94,9 @@ namespace UnityExplorerLoader
     [HarmonyPatch]
     class UnityExplorerLoader : MonoBehaviour
     {
-        [HarmonyPatch(typeof(GameMainMenu), "Awake")]
+        [HarmonyPatch(typeof(MainMenu), "Awake")]
         [HarmonyPostfix]
-        public static void MainMenu_Awake(GameMainMenu __instance)
+        public static void MainMenu_Awake(MainMenu __instance)
         {
             ExplorerStandalone.CreateInstance(delegate (string msg, LogType logType)
             {
@@ -156,44 +156,44 @@ namespace UnityExplorerLoader
     }
 }
 
-[HarmonyPatch]
-static class AnnoyingMessagesPatch
-{
-    static MethodBase TargetMethod() =>
-    typeof(KingmakerInputModule)
-        .GetNestedTypes(AccessTools.all)
-        .Where(t => t.GetCustomAttributes<CompilerGeneratedAttribute>().Any())
-        .Select(t => t.GetMethod("MoveNext", AccessTools.all))
-        .FirstOrDefault();
+//[HarmonyPatch]
+//static class AnnoyingMessagesPatch
+//{
+//    static MethodBase TargetMethod() =>
+//    typeof(KingmakerInputModule)
+//        .GetNestedTypes(AccessTools.all)
+//        .Where(t => t.GetCustomAttributes<CompilerGeneratedAttribute>().Any())
+//        .Select(t => t.GetMethod("MoveNext", AccessTools.all))
+//        .FirstOrDefault();
 
-    [HarmonyTranspiler]
-    static IEnumerable<CodeInstruction> CheckEventSystem_Transpiler(IEnumerable<CodeInstruction> instructions)
-    {
-        var matchPattern = new Func<CodeInstruction, bool>[]
-        {
-            ci => ci.opcode == OpCodes.Ldsfld,
-            ci => ci.opcode == OpCodes.Ldstr,
-            ci => ci.Calls(AccessTools.Method(typeof(LogChannel), nameof(LogChannel.Log), [typeof(string)]))
-        };
+//    [HarmonyTranspiler]
+//    static IEnumerable<CodeInstruction> CheckEventSystem_Transpiler(IEnumerable<CodeInstruction> instructions)
+//    {
+//        var matchPattern = new Func<CodeInstruction, bool>[]
+//        {
+//            ci => ci.opcode == OpCodes.Ldsfld,
+//            ci => ci.opcode == OpCodes.Ldstr,
+//            ci => ci.Calls(AccessTools.Method(typeof(LogChannel), nameof(LogChannel.Log), [typeof(string)]))
+//        };
 
-        bool replaceWithNop(IEnumerable<CodeInstruction> instructions)
-        {
-            var match = instructions.FindInstructionsIndexed(matchPattern);
+//        bool replaceWithNop(IEnumerable<CodeInstruction> instructions)
+//        {
+//            var match = instructions.FindInstructionsIndexed(matchPattern);
 
-            if (match.Count() != 3)
-                return false;
+//            if (match.Count() != 3)
+//                return false;
 
-            foreach (var (_, instruction) in match)
-            {
-                instruction.opcode = OpCodes.Nop;
-                instruction.operand = null;
-            }
+//            foreach (var (_, instruction) in match)
+//            {
+//                instruction.opcode = OpCodes.Nop;
+//                instruction.operand = null;
+//            }
 
-            return true;
-        }
+//            return true;
+//        }
 
-        while (replaceWithNop(instructions)) { }
+//        while (replaceWithNop(instructions)) { }
 
-        return instructions;
-    }
-}
+//        return instructions;
+//    }
+//}
