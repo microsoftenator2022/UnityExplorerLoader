@@ -24,6 +24,10 @@
       <HintPath>$(RogueTraderInstallDir)\WH40KRT_Data\Managed\Owlcat.Runtime.Core.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Owlcat.Runtime.UI">
+      <HintPath>$(RogueTraderInstallDir)\WH40KRT_Data\Managed\Owlcat.Runtime.UI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="CountingGuard">
       <HintPath>$(RogueTraderInstallDir)\WH40KRT_Data\Managed\CountingGuard.dll</HintPath>
       <Private>False</Private>
