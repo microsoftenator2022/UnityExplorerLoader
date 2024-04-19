@@ -20,6 +20,10 @@
 			<HintPath>$(RogueTraderInstallDir)\WH40KRT_Data\Managed\Code.dll</HintPath>
 			<Private>False</Private>
 		</Reference>
+    <Reference Include="Owlcat.Runtime.Core">
+      <HintPath>$(RogueTraderInstallDir)\WH40KRT_Data\Managed\Owlcat.Runtime.Core.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="CountingGuard">
       <HintPath>$(RogueTraderInstallDir)\WH40KRT_Data\Managed\CountingGuard.dll</HintPath>
       <Private>False</Private>
@@ -43,9 +47,9 @@
 	</ItemGroup>
 
   <ItemGroup>
-    <Reference Include="UnityExplorer.STANDALONE.Mono" HintPath="UnityExplorer\UnityExplorer.STANDALONE.Mono.dll" Private="False" />
-    <Reference Include="UniverseLib.Mono" HintPath="UnityExplorer\UniverseLib.Mono.dll" Private="False" />
-    <None Update="UnityExplorer\*.*" CopyToOutputDirectory="PreserveNewest" />
+    <Reference Include="UnityExplorer.STANDALONE.Mono" HintPath="UnityExplorer\UnityExplorer.STANDALONE.Mono.dll" Private="True" />
+    <Reference Include="UniverseLib.Mono" HintPath="UnityExplorer\UniverseLib.Mono.dll" Private="True" />
+    <None Include="UnityExplorer\*.*" Link="%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 	<ItemGroup>
 		<None Include="Info.json" CopyToOutputDirectory="PreserveNewest" />
@@ -55,9 +59,7 @@
       <Files Include="$(TargetDir)\**\*.*" />
     </ItemGroup>
 
-    <Copy
-      SourceFiles="@(Files)"
-      DestinationFiles="@(Files->'$(RogueTraderData)\UnityModManager\$(AssemblyName)\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="@(Files)" DestinationFiles="@(Files->'$(RogueTraderData)\UnityModManager\$(AssemblyName)\%(RecursiveDir)%(Filename)%(Extension)')" />
   </Target>
 	<ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
@@ -65,7 +67,12 @@
 	<ItemGroup>
 		<PackageReference Include="UnityEngine.Modules" Version="2020.3.48" IncludeAssets="compile" />
 	</ItemGroup>
-  <Target Name="GenerateCustomPropsFile" BeforeTargets="BeforeBuild" Condition="$(RogueTraderInstallDir) == ''">
+
+  <Target Name="RegenerateCustomPropsFile" BeforeTargets="Clean">
+    <Delete Files="GamePath.props" />
+  </Target>
+  
+  <Target Name="GenerateCustomPropsFile" BeforeTargets="BeforeBuild" AfterTargets="Clean" Condition="$(RogueTraderInstallDir) == ''">
     <Exec Command="findstr /C:&quot;Mono path[0]&quot; &quot;$(RogueTraderData)\Player.log&quot;" IgnoreExitCode="true" ConsoleToMSBuild="true">
       <Output TaskParameter="ExitCode" PropertyName="ExitCode" />
       <Output TaskParameter="ConsoleOutput" PropertyName="MonoPathLine" />
@@ -81,4 +88,5 @@
 
     <WriteLinesToFile File="GamePath.props" Lines="&lt;Project xmlns='http://schemas.microsoft.com/developer/msbuild/2003'&gt; &#xD;&#xA;	&lt;PropertyGroup&gt; &#xD;&#xA;		&lt;RogueTraderInstallDir&gt;$(RogueTraderInstallDir)&lt;/RogueTraderInstallDir&gt;&#xD;&#xA;	&lt;/PropertyGroup&gt;&#xD;&#xA;&lt;/Project&gt;" Overwrite="true" Encoding="utf-8" />
   </Target>
+  
 </Project>
