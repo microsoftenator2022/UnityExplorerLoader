@@ -2,12 +2,10 @@
 
 using Kingmaker;
 using Kingmaker.UI;
-using Kingmaker.UI.MVVM;
 using Kingmaker.UI.Selection;
 
 using MicroUtils.Transpiler;
-
-using Owlcat.Runtime.Core.Logging;
+using Kingmaker.Assets.UI.Context;
 
 using System;
 using System.Collections;
@@ -97,7 +95,7 @@ namespace UnityExplorerLoader
     {
         static bool loaded;
 
-        [HarmonyPatch(typeof(RootUIContext), nameof(RootUIContext.InitializeUiScene))]
+        [HarmonyPatch(typeof(GameStarter), nameof(GameStarter.LoadPresetFromParameters))]
         [HarmonyPostfix]
         static void InitializeUiScene_Postfix() => LoadUnityExplorer();
 
