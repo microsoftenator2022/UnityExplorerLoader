@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<Import Project="GamePath.props" Condition="Exists('GamePath.props')" />
-	
+
 	<PropertyGroup>
 		<TargetFramework>net472</TargetFramework>
 		<AssemblyName>UnityExplorerLoader</AssemblyName>
@@ -13,7 +13,8 @@
 			https://api.nuget.org/v3/index.json;
 			https://nuget.bepinex.dev/v3/index.json;
 		</RestoreAdditionalProjectSources>
-    <WrathData>$(LocalAppData)Low\Owlcat Games\Pathfinder Wrath Of The Righteous</WrathData>
+		<WrathData>C:\Users\Christian\AppData\LocalLow\Owlcat Games\Pathfinder Kingmaker</WrathData>
+		<WrathInstallDir>D:\Games\Steam\steamapps\common\Pathfinder Kingmaker</WrathInstallDir>
 	</PropertyGroup>
 	<ItemGroup>
 		<Reference Include="Assembly-CSharp">
@@ -30,21 +31,21 @@
       <Private>False</Private>
     </Reference>-->
     <Reference Include="UnityEngine.UI">
-      <HintPath>$(WrathInstallDir)\Wrath_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <HintPath>$(WrathInstallDir)\Kingmaker_Data\Managed\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="UnityModManager">
-      <HintPath>$(WrathInstallDir)\Wrath_Data\Managed\UnityModManager\UnityModManager.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>$(WrathInstallDir)\Wrath_Data\Managed\Newtonsoft.Json.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="0Harmony">
-      <HintPath>$(WrathInstallDir)\Wrath_Data\Managed\0Harmony.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
+		<Reference Include="UnityModManager">
+      <HintPath>$(WrathInstallDir)\Kingmaker_Data\Managed\UnityModManager\UnityModManager.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="Newtonsoft.Json">
+			<HintPath>$(WrathInstallDir)\Kingmaker_Data\Managed\Newtonsoft.Json.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="0Harmony">
+			<HintPath>$(WrathInstallDir)\Kingmaker_Data\Managed\UnityModManager\0Harmony.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
 	</ItemGroup>
 
   <ItemGroup>
@@ -66,6 +67,19 @@
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
 	</ItemGroup>
 	<ItemGroup>
+		<PackageReference Include="UnityEngine.Modules" Version="2018.4.10" IncludeAssets="compile" />
+		<!--<PackageReference Include="Aze.Publicise.MSBuild.Task" Version="1.1.0" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" PrivateAssets="all" />-->
+	</ItemGroup>
+	<!--<Target Name="Publicise" AfterTargets="BeforeBuild;Clean" Inputs="@(PubliciseInputAssemblies)" Outputs="$(SolutionDir)lib\%(PubliciseInputAssemblies.FileName)_public.dll;$(SolutionDir)lib\%(PubliciseInputAssemblies.FileName)_public.hash">
+		<MakeDir Directories="$(SolutionDir)lib/" />
+		<Publicise InputAssemblies="@(PubliciseInputAssemblies)" OutputPath="$(SolutionDir)lib/" PubliciseCompilerGenerated="true" />
+	</Target>-->
+	<!--
+	<Target Name="GenerateCustomPropsFile" BeforeTargets="BeforeBuild" Condition="$(WrathInstallDir) == ''">
+		<Exec Command="findstr /C:&quot;Mono path[0]&quot; &quot;$(WrathData)\Player.log&quot;" IgnoreExitCode="true" ConsoleToMSBuild="true">
+			<Output TaskParameter="ExitCode" PropertyName="ExitCode" />
+			<Output TaskParameter="ConsoleOutput" PropertyName="MonoPathLine" />
+		</Exec>
 		<PackageReference Include="UnityEngine.Modules" Version="2020.3.48" IncludeAssets="compile" />
     <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.2" IncludeAssets="build; compile; contentfiles; analyzers; buildtransitive" PrivateAssets="all" />
   </ItemGroup>
@@ -88,12 +102,8 @@
       <WrathInstallDir>$([System.Text.RegularExpressions.Regex]::Match($(MonoPathLine), $(MonoPathRegex)).Groups[1].Value)</WrathInstallDir>
     </PropertyGroup>
 
-    <WriteLinesToFile File="$(SolutionDir)GamePath.props" Lines="&lt;Project xmlns='http://schemas.microsoft.com/developer/msbuild/2003'&gt;
-	&lt;PropertyGroup&gt;
-		&lt;WrathInstallDir&gt;$(WrathInstallDir)&lt;/WrathInstallDir&gt;
-	&lt;/PropertyGroup&gt;
-&lt;/Project&gt;" Overwrite="true" Encoding="utf-8" />
-  </Target>
-  
+		<WriteLinesToFile File="GamePath.props" Lines="&lt;Project xmlns='http://schemas.microsoft.com/developer/msbuild/2003'&gt; &#xA;	&lt;PropertyGroup&gt; &#xA;		&lt;WrathInstallDir&gt;$(WrathInstallDir)&lt;/WrathInstallDir&gt;&#xA;	&lt;/PropertyGroup&gt;&#xA;&lt;/Project&gt;" Overwrite="true" Encoding="utf-8" />
+	</Target>
+	-->
 </Project>
 
