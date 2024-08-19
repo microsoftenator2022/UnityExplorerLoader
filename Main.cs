@@ -30,61 +30,93 @@ using UnityModManagerNet;
 
 namespace UnityExplorerLoader
 {
-    //    [HarmonyPatch]
-    //    class InputFocusHandler : MonoBehaviour
-    //    {
-    //        public InputField component;
-    //        bool keyboardWasDisabled;
+    [HarmonyPatch]
+    class InputFocusHandler : MonoBehaviour
+    {
+        //public InputField component;
+        //bool keyboardWasDisabled;
 
-    //        void Update()
-    //        {
-    //            if (component.isFocused)
-    //            {
-    //                if (!Game.Instance.Keyboard.Disabled)
-    //                {
-    ////#if DEBUG
-    ////                    Main.Logger.Log("Disabling keyboard");
-    ////#endif
-    //                    keyboardWasDisabled = true;
-    //                    Game.Instance.Keyboard.Disabled.SetValue(true);
-    //                }
-    //                return;
-    //            }
+        //void Update()
+        //{
+        //    if (component.isFocused)
+        //    {
+        //        if (!Game.Instance.Keyboard.Disabled)
+        //        {
+        //            //#if DEBUG
+        //            //                    Main.Logger.Log("Disabling keyboard");
+        //            //#endif
+        //            keyboardWasDisabled = true;
+        //            Game.Instance.Keyboard.Disabled.SetValue(true);
+        //        }
+        //        return;
+        //    }
 
-    //            if (Game.Instance.Keyboard.Disabled && !component.isFocused && keyboardWasDisabled)
-    //            {
-    ////#if DEBUG
-    ////                Main.Logger.Log("Enabling keyboard");
-    ////#endif
-    //                keyboardWasDisabled = false;
-    //                Game.Instance.Keyboard.Disabled.SetValue(false);
-    //            }
-    //        }
+        //    if (Game.Instance.Keyboard.Disabled && !component.isFocused && keyboardWasDisabled)
+        //    {
+        //        //#if DEBUG
+        //        //                Main.Logger.Log("Enabling keyboard");
+        //        //#endif
+        //        keyboardWasDisabled = false;
+        //        Game.Instance.Keyboard.Disabled.SetValue(false);
+        //    }
+        //}
 
-    //        [HarmonyPatch(typeof(UIFactory), nameof(UIFactory.CreateInputField))]
-    //        [HarmonyPostfix]
-    //        static InputFieldRef UIFactory_CreateInputField_Postfix(InputFieldRef __return)
-    //        {
-    //            __return.Component.gameObject.AddComponent<InputFocusHandler>().component = __return.Component;
+        [HarmonyPatch(typeof(UIFactory), nameof(UIFactory.CreateInputField))]
+        [HarmonyPostfix]
+        static InputFieldRef UIFactory_CreateInputField_Postfix(InputFieldRef __result)
+        {
+            __result.Component.gameObject.AddComponent<InputFocusHandler>()/*.component = __return.Component*/;
 
-    //            return __return;
-    //        }
-    //    }
+            return __result;
+        }
+    }
 
     [HarmonyPatch(typeof(KeyboardAccess))]
     static class KeyboardAccessPatch
     {
-        [HarmonyPatch(nameof(KeyboardAccess.IsInputFieldSelected)), HarmonyPrefix]
-        static bool Prefix(ref bool __result)
+        //[HarmonyPatch(nameof(KeyboardAccess.IsInputFieldSelected))]
+        //[HarmonyPrefix]
+        //static bool Prefix(ref bool __result)
+        //{
+        //    try
+        //    {
+        //        EventSystem current = EventSystem.current;
+                
+        //        if (current == null)
+        //            return true;
+
+        //        GameObject selectedGameObject = current.currentSelectedGameObject;
+        //        if (selectedGameObject != null && selectedGameObject.GetComponent<InputFocusHandler>() != null)
+        //        {
+        //            __result = true;
+        //            return false;
+        //        }
+
+        //        return true;
+        //    }
+        //    finally
+        //    {
+        //    }
+        //}
+
+        [HarmonyPatch(nameof(KeyboardAccess.IsInputFieldSelected))]
+        [HarmonyPostfix]
+        static bool Postfix(bool __result)
         {
             try
             {
                 EventSystem current = EventSystem.current;
+
                 if (current == null)
-                    return false;
+                    return __result;
+
                 GameObject selectedGameObject = current.currentSelectedGameObject;
-                __result = selectedGameObject != null && selectedGameObject.GetComponent<InputField>() != null;
-                return !__result;
+                if (selectedGameObject != null && selectedGameObject.GetComponent<InputField>() != null)
+                {
+                    return true;
+                }
+
+                return __result;
             }
             finally
             {
@@ -93,7 +125,7 @@ namespace UnityExplorerLoader
     }
 
     [HarmonyPatch]
-    class UnityExplorerLoader : MonoBehaviour
+    class UnityExplorerLoader
     {
         static bool loaded;
 
@@ -148,7 +180,7 @@ namespace UnityExplorerLoader
 
         internal static ExplorerStandalone UnitExplorer;
 
-        static bool Load(UnityModManager.ModEntry modEntry)
+        internal static bool Load(UnityModManager.ModEntry modEntry)
         {
             Logger = modEntry.Logger;
             modEntry.OnUnload = OnUnload;
