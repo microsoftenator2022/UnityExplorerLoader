@@ -30,46 +30,46 @@ using UnityModManagerNet;
 
 namespace UnityExplorerLoader
 {
-    [HarmonyPatch]
-    class InputFocusHandler : MonoBehaviour
-    {
-        //public InputField component;
-        //bool keyboardWasDisabled;
+    //[HarmonyPatch]
+    //class InputFocusHandler : MonoBehaviour
+    //{
+    //    //public InputField component;
+    //    //bool keyboardWasDisabled;
 
-        //void Update()
-        //{
-        //    if (component.isFocused)
-        //    {
-        //        if (!Game.Instance.Keyboard.Disabled)
-        //        {
-        //            //#if DEBUG
-        //            //                    Main.Logger.Log("Disabling keyboard");
-        //            //#endif
-        //            keyboardWasDisabled = true;
-        //            Game.Instance.Keyboard.Disabled.SetValue(true);
-        //        }
-        //        return;
-        //    }
+    //    //void Update()
+    //    //{
+    //    //    if (component.isFocused)
+    //    //    {
+    //    //        if (!Game.Instance.Keyboard.Disabled)
+    //    //        {
+    //    //            //#if DEBUG
+    //    //            //                    Main.Logger.Log("Disabling keyboard");
+    //    //            //#endif
+    //    //            keyboardWasDisabled = true;
+    //    //            Game.Instance.Keyboard.Disabled.SetValue(true);
+    //    //        }
+    //    //        return;
+    //    //    }
 
-        //    if (Game.Instance.Keyboard.Disabled && !component.isFocused && keyboardWasDisabled)
-        //    {
-        //        //#if DEBUG
-        //        //                Main.Logger.Log("Enabling keyboard");
-        //        //#endif
-        //        keyboardWasDisabled = false;
-        //        Game.Instance.Keyboard.Disabled.SetValue(false);
-        //    }
-        //}
+    //    //    if (Game.Instance.Keyboard.Disabled && !component.isFocused && keyboardWasDisabled)
+    //    //    {
+    //    //        //#if DEBUG
+    //    //        //                Main.Logger.Log("Enabling keyboard");
+    //    //        //#endif
+    //    //        keyboardWasDisabled = false;
+    //    //        Game.Instance.Keyboard.Disabled.SetValue(false);
+    //    //    }
+    //    //}
 
-        [HarmonyPatch(typeof(UIFactory), nameof(UIFactory.CreateInputField))]
-        [HarmonyPostfix]
-        static InputFieldRef UIFactory_CreateInputField_Postfix(InputFieldRef __result)
-        {
-            __result.Component.gameObject.AddComponent<InputFocusHandler>()/*.component = __return.Component*/;
+    //    [HarmonyPatch(typeof(UIFactory), nameof(UIFactory.CreateInputField))]
+    //    [HarmonyPostfix]
+    //    static InputFieldRef UIFactory_CreateInputField_Postfix(InputFieldRef __result)
+    //    {
+    //        __result.Component.gameObject.AddComponent<InputFocusHandler>()/*.component = __return.Component*/;
 
-            return __result;
-        }
-    }
+    //        return __result;
+    //    }
+    //}
 
     [HarmonyPatch(typeof(KeyboardAccess))]
     static class KeyboardAccessPatch
